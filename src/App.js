@@ -1,14 +1,109 @@
 import './App.css';
 import Baner from './components/Baner/Baner';
 import Search from './components/Search/Search';
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import DisplayFlights from './components/DisplayFlights/DisplayFlights';
+import Navbar from './components/Navbar/Navbar';
+import Footer from './components/Footer/Footer';
+import CheapFlights from './components/CheapFlights/CheapFlights';
+import Faq from './components/Faq/Faq';
+import PopularDestinations from './components/PopularDestinations/PopularDestinations';
+import { useDispatch, useSelector } from 'react-redux';
+import useApi from './Api/useApi';
+import { getLocation } from './utils/common';
+import { useEffect, useState } from 'react';
+import ErrorBoundary from './utils/ErrorBoundary';
+import DisplayApiError from './utils/DisplayApiError';
+import FlightsEverywhere from './components/FlightsEverywhere/FlightsEverywhere';
+import { updateNearByAirports } from './store/nearByAirportsSlice';
+import { Button } from '@mui/material';
+
+const theme = createTheme({
+  components: {
+    MuiOutlinedInput: {
+      styleOverrides: {
+        notchedOutline: {
+          border: "none",// Removes the outline
+          ':focus': {
+            border: '2px solid blue'
+          }
+        },
+      },
+    },
+  },
+});
+
 
 function App() {
+  const [location, setLocation] = useState({ latitude: null, longitude: null });
+  const isBanerDisplay = useSelector((state) => state.display.isBanerDisplay); // Access Redux state
+  const NearByAirportsData = useSelector((state) => state.nearByAirports.nearByAirportsData)
+
+  const { callApi, error, loading } = useApi()
+  const dispatch = useDispatch(); // Hook to dispatch actions
+
+
+  const getNearByAirports = async (latitude, longitude) => {
+    try {
+      const response = await callApi('/getNearByAirports', 'GET', null, { lat: latitude, lng: longitude, locale: 'en-US' });
+      console.log('Location Data From App:', response.data)
+      dispatch(updateNearByAirports(response.data))
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  console.log('4555544::', NearByAirportsData)
+
+  useEffect(() => {
+    const getLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            console.log('latitude:', latitude, 'longitude', longitude)
+            setLocation({ latitude, longitude });
+            // Call the API with latitude and longitude
+            const updatedLat = latitude.toString();
+            const updatedLang = longitude.toString();
+            getNearByAirports(updatedLat, updatedLang);
+          },
+          (err) => {
+            console.log("Unable to retrieve location");
+          }
+        );
+      } else {
+        console.log("Geolocation is not supported by this browser.");
+      }
+    };
+
+    getLocation();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <DisplayApiError errorMessage={error} />; // Show the error message if there's an API failure
+
   return (
-    <div>
-      <Baner />
-      <Search />
-    </div>
+    <ThemeProvider theme={theme}>
+      {NearByAirportsData && <>
+        <Navbar />
+        {isBanerDisplay && <Baner />}
+        <Search />
+        {/* {isFlightsDisplay && <DisplayFlights />} */}
+        <FlightsEverywhere />
+        <PopularDestinations />
+        <Faq />
+        <CheapFlights />
+        <Footer />
+      </>}
+    </ThemeProvider>
   );
 }
 
-export default App;
+const AppWithErrorBoundary = () => (
+  <ErrorBoundary>
+    <App />
+  </ErrorBoundary>
+);
+
+export default AppWithErrorBoundary;
