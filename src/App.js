@@ -32,7 +32,6 @@ const theme = createTheme({
 
 
 function App() {
-  const [location, setLocation] = useState({ latitude: null, longitude: null });
   const isBanerDisplay = useSelector((state) => state.display.isBanerDisplay); // Access Redux state
   const NearByAirportsData = useSelector((state) => state.nearByAirports.nearByAirportsData)
 
@@ -56,11 +55,10 @@ function App() {
         navigator.geolocation.getCurrentPosition(
           (position) => {
             const { latitude, longitude } = position.coords;
-            setLocation({ latitude, longitude });
             // Call the API with latitude and longitude
             const updatedLat = latitude.toString();
             const updatedLang = longitude.toString();
-            getNearByAirports(updatedLat, updatedLang);
+            // getNearByAirports(updatedLat, updatedLang);
           },
           (err) => {
             console.log("Unable to retrieve location");

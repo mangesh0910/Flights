@@ -66,13 +66,13 @@ function Navbar() {
     const drawerContent = (
         <List>
             {pages.map((text, index) => (
-                <>
-                    <ListItem button key={text.label}>
+                <Box key={text.label}>
+                    <ListItem button >
                         <ListItemIcon>{text.icon}</ListItemIcon>
                         <ListItemText primary={text.label} />
                     </ListItem>
                     {index === 4 || index === 8 ? <Divider sx={{ my: 1 }} /> : null}
-                </>
+                </Box>
 
             ))}
         </List>

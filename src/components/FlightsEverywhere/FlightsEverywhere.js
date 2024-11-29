@@ -7,6 +7,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import useApi from '../../Api/useApi'
 import { FlightEverywhereData } from '../../Data/FlightEverywhereData'
 import { useSelector } from 'react-redux';
+import { googleMapApiKey } from '../../Api/keys';
 
 const FlightsEverywhere = () => {
     const NearByAirportsData = useSelector((state) => state.nearByAirports.nearByAirportsData)
@@ -46,11 +47,10 @@ const FlightsEverywhere = () => {
         try {
 
             const updatedFlightsData = FlightEverywhereData.results.map((fl) => fl.content.location.name)
-            const apiKey = "AIzaSyBiSd5t17ek3QNPz11MqKrWbl_2ebOdxgI"; // Replace with your API key
 
             updatedFlightsData.map(async (fl) => {
                 const response = await fetch(
-                    `https://maps.googleapis.com/maps/api/geocode/json?address=${fl}&key=${apiKey}`
+                    `https://maps.googleapis.com/maps/api/geocode/json?address=${fl}&key=${googleMapApiKey}`
                 );
 
                 if (!response.ok) {
@@ -74,12 +74,12 @@ const FlightsEverywhere = () => {
     };
 
     return (
-        <Grid container sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+        <Grid container sx={{ width: '100%', display: 'flex', justifyContent: 'center', mx: { xs: 2, sm: 0 } }}>
             <Grid item container sm={8} sx={{ my: 2, display: 'flex', display: 'flex', justifyContent: 'flex-start' }}>
                 <Grid item sm={12} sx={{}}>
                     <Typography variant='h6' sx={{ py: 1, color: '#202124', fontSize: 20 }}>Find cheap flights from {selectedFromEverywhere != null ? selectedFromEverywhere.presentation.title : NearByAirportsData.current.presentation.title} to anywhere</Typography>
                 </Grid>
-                <Grid item sm={12} sx={{ display: 'flex', gap: 2, my: 1 }}>
+                <Grid item sm={12} sx={{ display: 'flex', gap: 2, my: 1, overflow: 'auto', }}>
                     {
                         NearByAirportsData.nearby.map((na) => (<Button onClick={() => onHandleClick(na)} variant='outlined' sx={{ border: '1px solid lightgray', borderRadius: 4, color: 'black', fontSize: 14, textTransform: 'none' }}>{na.presentation.title}</Button>))
                     }

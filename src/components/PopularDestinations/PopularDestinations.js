@@ -29,7 +29,7 @@ const PopularDestinations = () => {
         }
     };
     return (
-        <Grid container sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+        <Grid container sx={{ width: '100%', display: 'flex', justifyContent: 'center', mx: { xs: 2, sm: 0 } }}>
             <Grid item container sm={8} sx={{ my: 2 }}>
                 <Typography variant='h6' sx={{ py: 1, color: '#202124', fontSize: 20 }}>Popular destinations from Kolhapur</Typography>
                 <Box sx={{ position: "relative", display: "flex", alignItems: "center", width: "100%" }}>

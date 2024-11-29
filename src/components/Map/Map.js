@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import { googleMapApiKey } from "../../Api/keys";
 
 const Map = ({ locations }) => {
     const containerStyle = {
@@ -7,7 +8,6 @@ const Map = ({ locations }) => {
         height: "400px",
     };
 
-    const apiKey = "AIzaSyBiSd5t17ek3QNPz11MqKrWbl_2ebOdxgI";
     const markerRefs = useRef([]);
 
     useEffect(() => {
@@ -21,7 +21,7 @@ const Map = ({ locations }) => {
     }, [locations]);
 
     return (
-        <LoadScript googleMapsApiKey={apiKey}>
+        <LoadScript googleMapsApiKey={googleMapApiKey}>
             <GoogleMap
                 mapContainerStyle={containerStyle}
                 center={{ lat: 21.4735329, lng: 55.975413 }}

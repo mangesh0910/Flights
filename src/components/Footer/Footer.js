@@ -7,7 +7,7 @@ import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 
 const Footer = () => {
     return (
-        <Grid container sx={{ width: '100%', display: 'flex', justifyContent: 'center', my: 4 }}>
+        <Grid container sx={{ width: '100%', display: 'flex', justifyContent: 'center', my: 4, mx: { xs: 2, sm: 0 } }}>
             <Grid item container sm={8} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', borderTop: '1px solid lightgray', borderBottom: '2px solid lightgray', height: '80%', py: 4 }}>
                 <Box sm={8} sx={{ width: '100%', display: 'flex', gap: 2, justifyContent: 'center', alignItems: 'center' }}>
                     <Button variant="outlined" sx={{ textTransform: 'none', borderRadius: 4, border: '1px solid lightgray' }} startIcon={<LanguageIcon />}>
