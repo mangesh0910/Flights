@@ -1,8 +1,7 @@
 import React, { useRef, useState } from 'react'
 import Map from '../Map/Map'
-import { Button, Card, CardContent, CardMedia, Grid, IconButton, Stack, Typography } from '@mui/material'
+import { Button, Card, CardContent, CardMedia, Grid, IconButton, Typography } from '@mui/material'
 import { Box } from '@mui/system'
-// import { NearByAirportsData } from '../../Data/NearByAirportsData'
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import useApi from '../../Api/useApi'
@@ -12,7 +11,6 @@ import { useSelector } from 'react-redux';
 const FlightsEverywhere = () => {
     const NearByAirportsData = useSelector((state) => state.nearByAirports.nearByAirportsData)
     const [selectedFromEverywhere, setSelectedFromEverywhere] = useState(null);
-    const [coordinates, setCoordinates] = useState(null);
     const [coordinatesArray, setCoordinatesArray] = useState([]);
 
     const scrollContainerRef = useRef(null);
@@ -20,7 +18,7 @@ const FlightsEverywhere = () => {
 
     const scroll = (direction) => {
         const container = scrollContainerRef.current;
-        const scrollAmount = 300; // Adjust this value based on your desired scroll distance
+        const scrollAmount = 300;
         if (direction === "left") {
             container.scrollLeft -= scrollAmount;
         } else {
@@ -33,10 +31,7 @@ const FlightsEverywhere = () => {
             const params = {
                 originEntityId: selectedFromEverywhere != null ? selectedFromEverywhere.navigation.entityId : NearByAirportsData.current.navigation.entityId,
             }
-            console.log('searchFlightEverywhere params:', params)
-
             const response = await callApi('/searchFlightEverywhere', 'GET', null, params);
-            console.log('searchFlightEverywhere::', response.data)
         } catch (error) {
             console.error(error);
         }
@@ -44,9 +39,6 @@ const FlightsEverywhere = () => {
 
     const onHandleClick = (na) => {
         setSelectedFromEverywhere(na)
-        // searchFlightEverywhere();
-        // const updatedFlightsData = FlightEverywhereData.results.map((fl) => fl.content.location.name)
-        // console.log('updatedFlightsData::', updatedFlightsData)
         fetchCoordinates()
     }
 
@@ -54,7 +46,6 @@ const FlightsEverywhere = () => {
         try {
 
             const updatedFlightsData = FlightEverywhereData.results.map((fl) => fl.content.location.name)
-            console.log('updatedFlightsData::', updatedFlightsData)
             const apiKey = "AIzaSyBiSd5t17ek3QNPz11MqKrWbl_2ebOdxgI"; // Replace with your API key
 
             updatedFlightsData.map(async (fl) => {
@@ -68,27 +59,20 @@ const FlightsEverywhere = () => {
 
                 const data = await response.json();
 
-                console.log('data::', data)
 
                 if (data.status === "OK") {
                     const location = data.results[0].geometry.location;
-                    console.log('location coordinates are::', location)
-                    // setCoordinates(location);
-                    // const updatedLocation = { ...location, name: 'fl' }
                     setCoordinatesArray((prevArray) => [...prevArray, location])
                 } else {
                     console.log("Location not found");
-                    setCoordinates(null);
                 }
             })
         } catch (err) {
             console.log(err.message);
-            setCoordinates(null);
         }
 
     };
 
-    console.log('NearByAirportsData from flighteverywhere::', NearByAirportsData)
     return (
         <Grid container sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
             <Grid item container sm={8} sx={{ my: 2, display: 'flex', display: 'flex', justifyContent: 'flex-start' }}>

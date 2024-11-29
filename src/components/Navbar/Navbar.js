@@ -227,12 +227,12 @@ function Navbar() {
                 onClose={toggleDrawer(false)}
                 sx={{ marginTop: '64px', '& .MuiModal-backdrop': { backgroundColor: 'rgba(0,0,0,0)' } }}
                 ModalProps={{
-                    keepMounted: true, // Keep the drawer in the DOM for accessibility
+                    keepMounted: true,
                 }}
                 PaperProps={{
                     sx: {
-                        marginTop: '75px', // Push the drawer below the AppBar (adjust height as needed)
-                        width: '270px', // Set the custom width of the Drawer
+                        marginTop: '75px',
+                        width: '270px',
                         overflowY: 'scroll'
                     },
                 }}

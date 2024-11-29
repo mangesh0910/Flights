@@ -2,15 +2,11 @@ import { Box, Grid, Typography } from '@mui/material';
 import React from 'react'
 import Accordion, { accordionClasses } from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails, {
-    accordionDetailsClasses,
-} from '@mui/material/AccordionDetails';
+import AccordionDetails, { accordionDetailsClasses, } from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Fade from '@mui/material/Fade';
 import FaqData from '../../Data/FaqData';
-import GetUsersConfig from '../../Api/GetUsersConfig';
-import Counter from '../TestRedux/Counter';
-import Map from '../Map/Map';
+
 
 
 const Faq = () => {
@@ -62,9 +58,7 @@ const Faq = () => {
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     <Typography sx={{ fontSize: 16, fontWeight: 400, color: '#3C4043' }}>
-                                        {
-                                            faq.ans
-                                        }
+                                        {faq.ans}
                                     </Typography>
                                 </AccordionDetails>
                             </Accordion>))

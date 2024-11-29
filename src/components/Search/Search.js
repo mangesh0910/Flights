@@ -31,7 +31,6 @@ import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import zIndex from '@mui/material/styles/zIndex';
 import useApi from '../../Api/useApi';
-// import DisplayFlights from '../DisplayFlights/DisplayFlights';
 import { updateIsFlightsDisplay } from '../../store/displaySlice';
 import { useDispatch, useSelector } from 'react-redux';
 import DisplayFlights from '../DisplayFlights/DisplayFlights';
@@ -68,8 +67,6 @@ const Search = () => {
     const initialFromCityData = useSelector((state) => state.nearByAirports.nearByAirportsData)
     const isFlightsDisplay = useSelector((state) => state.display.isFlightsDisplay); // Access Redux state
 
-    console.log('initialFromCityData from search', initialFromCityData)
-
     const [tripType, setTripType] = useState(TripTypes[1].value);
     const [classType, setClassType] = useState(ClassTypes[0].label);
 
@@ -84,8 +81,6 @@ const Search = () => {
     const [isFromCityVisited, setIsFromCityVisited] = useState(false);
     const [searchParams, setSearchParams] = useState([]);
 
-
-
     const { callApi, error, loading } = useApi();
 
     const [adultsCount, setAdultsCount] = useState(1)
@@ -95,9 +90,10 @@ const Search = () => {
     const [totalPassengersCount, setTotalPassengersCount] = useState(1)
     const [journeyStartDate, setJourneyStartDate] = useState(new Date())
     const [journeyEndDate, setJourneyEndDate] = useState(new Date())
-    const [searchedFlightsData, setSearchedFlightsData] = useState(null);
     const dispatch = useDispatch(); // Hook to dispatch actions
 
+    const [isFromCityFocus, setIsFromCityFocus] = useState(false)
+    const [isToCityFocus, setIsToCityFocus] = useState(false)
 
     const handleTripTypeChange = (event) => {
         const { target: { value } } = event;
@@ -106,17 +102,10 @@ const Search = () => {
 
     const handleClassTypeChange = (event) => {
         const { target: { value } } = event;
-        console.log('value from handleClass', value)
         setClassType(value);
     };
 
-    const getNearByAirports = async () => {
-        try {
-            const response = await callApi('/getNearByAirports', 'GET', null, { lat: '19.242218017578125', lng: '72.85846156046128', locale: 'en-US' });
-        } catch (error) {
-            console.error(error);
-        }
-    }
+
 
     const searchFromAirports = async (query) => {
         if (!query) return; // Avoid API calls if input is empty
@@ -139,7 +128,6 @@ const Search = () => {
     }
     const searchFlights = async (query) => {
 
-        console.log('selectedFromCity[0] from search flights:', selectedFromCity)
         const tempFromArray = isFromCityVisited ? selectedFromCity[1] : null;
         const tempToArray = selectedToCity[0];
         const cabinClass = ClassTypes.filter((el) => el.label === classType);
@@ -148,11 +136,7 @@ const Search = () => {
         const finalChildrensCount = childrensCount > 0 ? childrensCount.toString() : '0';
         const finalInfantsCount = infantsOneCount > 0 ? infantsOneCount.toString() : '0';
 
-        // console.log('initialFromCityData.current.skyId', initialFromCityData.current.skyId)
-        console.log('tempFromArray[0].skyId', tempFromArray)
-        // console.log('initialFromCityData.current.entityId', initialFromCityData.current.entityId)
-        // console.log('tempToArray[0].entityId', tempToArray[0].entityId)
-        console.log('isFromCityVisited', isFromCityVisited)
+
         let params = {
             originSkyId: isFromCityVisited ? tempFromArray[0].skyId : initialFromCityData.current.skyId,
             destinationSkyId: tempToArray[0].skyId,
@@ -169,23 +153,11 @@ const Search = () => {
             countryCode: 'US'
         }
         params = tripType == 'Round trip' ? { ...params, returnDate: journeyEndDate } : params;
-        console.log('Params:', params)
         setSearchParams(params);
         dispatch(updateIsFlightsDisplay(true));
-        // try {
-        //     const response = await callApi('/searchFlights', 'GET', null, params);
-        //     console.log('Search Flights Data444::', response.data)
-        //     setSearchedFlightsData(response.data)
-        //     dispatch(updateIsFlightsDisplay(true));
-
-        // } catch (error) {
-        //     console.error(error);
-        // }
     }
 
-    // useEffect(() => {
-    //     getNearByAirports();
-    // }, [])
+
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -206,7 +178,6 @@ const Search = () => {
         event.stopPropagation(); // Prevent the click from closing the menu
     };
 
-    console.log('FromCityData::', fromCityData)
     return (
         <div>
             <Grid container sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
@@ -400,24 +371,14 @@ const Search = () => {
                                             multiple
                                             id="tags-outlined"
                                             sx={{ width: '50%' }}
-                                            // sx={{
-                                            //     width: '50%',
-                                            //     '& .MuiAutocomplete-endAdornment': {
-                                            //         display: 'none', // Hide the up/down arrow icons
-                                            //     },
-                                            // }}
-
                                             options={isFromCityVisited ? fromCityData : [initialFromCityData.current]}
                                             defaultValue={[initialFromCityData.current]}
                                             getOptionLabel={(fromCity) => fromCity.presentation.title}
                                             loading={loading}
                                             onChange={(event, value) => {
-                                                // setIsFromCityVisited(true);
                                                 setSelectedFromCity((prevSelectedFromcities) => [...prevSelectedFromcities, value])
-                                                console.log('SelectedFromCity', selectedFromCity); // `value` will be the selected object or null.
                                             }}
                                             onInputChange={(event, newInputValue) => {
-                                                console.log('newInputValue::', newInputValue)
                                                 setIsFromCityVisited(true);
                                                 setFromCity(newInputValue);
                                             }}
@@ -428,6 +389,8 @@ const Search = () => {
                                                     {...params}
                                                     variant='outlined'
                                                     placeholder="Where else?"
+                                                    onFocus={() => setIsFromCityFocus(true)}
+                                                    onBlur={() => setIsFromCityFocus(false)}
                                                     sx={{
                                                         "& .MuiOutlinedInput-root": {
                                                             border: "1px solid lightgray",
@@ -441,15 +404,12 @@ const Search = () => {
                                                                 border: "1px solid lightgray", // Maintain same border on focus
                                                             },
                                                         },
-                                                        // "& .MuiSvgIcon-root": {
-                                                        //     display: "none", // Hide arrow icons
-                                                        // },
                                                     }}
                                                     InputProps={{
                                                         ...params.InputProps,
                                                         endAdornment: (
                                                             <>
-                                                                {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                                                                {loading && isFromCityFocus ? <CircularProgress color="inherit" size={20} /> : null}
                                                                 {params.InputProps.endAdornment}
                                                             </>
                                                         ),
@@ -470,7 +430,6 @@ const Search = () => {
                                             // loading={loading}
                                             onChange={(event, value) => {
                                                 setSelectedToCity((prevSelectedTocities) => [...prevSelectedTocities, value])
-                                                console.log('SelectedToCity', selectedToCity); // `value` will be the selected object or null.
                                             }}
                                             onInputChange={(event, newInputValue) => {
                                                 setToCity(newInputValue);
@@ -481,6 +440,8 @@ const Search = () => {
                                                     {...params}
                                                     variant='outlined'
                                                     placeholder="Where To?"
+                                                    onFocus={() => setIsToCityFocus(true)}
+                                                    onBlur={() => setIsToCityFocus(false)}
                                                     sx={{
                                                         "& .MuiOutlinedInput-root": {
                                                             border: "1px solid lightgray",
@@ -494,15 +455,12 @@ const Search = () => {
                                                                 border: "1px solid lightgray", // Maintain same border on focus
                                                             },
                                                         },
-                                                        // "& .MuiSvgIcon-root": {
-                                                        //     display: "none", // Hide arrow icons
-                                                        // },
                                                     }}
                                                     InputProps={{
                                                         ...params.InputProps,
                                                         endAdornment: (
                                                             <>
-                                                                {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                                                                {loading && isToCityFocus ? <CircularProgress color="inherit" size={20} /> : null}
                                                                 {params.InputProps.endAdornment}
                                                             </>
                                                         ),
@@ -512,15 +470,10 @@ const Search = () => {
                                         />
                                     </Grid>
                                     <Grid item sm={5}>
-                                        {/* <RangeDatePicker
-                                            startDate={new Date(2020, 0, 15)}
-                                            endDate={new Date(2020, 1, 1)}
-                                        /> */}
                                         {tripType == 'One way' || tripType == 'Multi-city' ? <SingleDatePicker
                                             startDate={journeyStartDate}
                                             onChange={(startDate) => {
                                                 const formattedStartDate = moment(startDate).format('YYYY-MM-DD');
-                                                console.log('formattedStartDate', typeof (formattedStartDate), formattedStartDate)
                                                 setJourneyStartDate(formattedStartDate)
                                             }}
                                             minDate={new Date()}

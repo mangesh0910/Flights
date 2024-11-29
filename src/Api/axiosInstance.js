@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const axiosInstance = axios.create({
     baseURL: 'https://sky-scrapper.p.rapidapi.com/api/v1/flights', // Replace with your API base URL
-    timeout: 100000, // Timeout after 10 seconds
+    // timeout: 100000, // Timeout after 10 seconds
     headers: {
         // 'Content-Type': 'application/json',
         // Accept: 'application/json',

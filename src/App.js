@@ -2,7 +2,6 @@ import './App.css';
 import Baner from './components/Baner/Baner';
 import Search from './components/Search/Search';
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import DisplayFlights from './components/DisplayFlights/DisplayFlights';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
 import CheapFlights from './components/CheapFlights/CheapFlights';
@@ -10,13 +9,11 @@ import Faq from './components/Faq/Faq';
 import PopularDestinations from './components/PopularDestinations/PopularDestinations';
 import { useDispatch, useSelector } from 'react-redux';
 import useApi from './Api/useApi';
-import { getLocation } from './utils/common';
 import { useEffect, useState } from 'react';
 import ErrorBoundary from './utils/ErrorBoundary';
 import DisplayApiError from './utils/DisplayApiError';
 import FlightsEverywhere from './components/FlightsEverywhere/FlightsEverywhere';
 import { updateNearByAirports } from './store/nearByAirportsSlice';
-import { Button } from '@mui/material';
 
 const theme = createTheme({
   components: {
@@ -46,14 +43,12 @@ function App() {
   const getNearByAirports = async (latitude, longitude) => {
     try {
       const response = await callApi('/getNearByAirports', 'GET', null, { lat: latitude, lng: longitude, locale: 'en-US' });
-      console.log('Location Data From App:', response.data)
       dispatch(updateNearByAirports(response.data))
     } catch (error) {
       console.error(error);
     }
   }
 
-  console.log('4555544::', NearByAirportsData)
 
   useEffect(() => {
     const getLocation = () => {
@@ -61,7 +56,6 @@ function App() {
         navigator.geolocation.getCurrentPosition(
           (position) => {
             const { latitude, longitude } = position.coords;
-            console.log('latitude:', latitude, 'longitude', longitude)
             setLocation({ latitude, longitude });
             // Call the API with latitude and longitude
             const updatedLat = latitude.toString();

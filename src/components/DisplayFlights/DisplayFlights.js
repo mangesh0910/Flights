@@ -1,16 +1,13 @@
-import { Card, Grid, Typography, Box, Stack, Button, MenuItem, Checkbox, ListItemText, FormControl, Select, OutlinedInput, CircularProgress } from '@mui/material';
+import { Grid, Typography, Box, Stack, Button, MenuItem, Checkbox, ListItemText, FormControl, Select, OutlinedInput, CircularProgress } from '@mui/material';
 import React, { useEffect } from 'react';
 //Accordion
 import Accordion, { accordionClasses } from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails, {
-    accordionDetailsClasses,
-} from '@mui/material/AccordionDetails';
+import AccordionDetails, { accordionDetailsClasses, } from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Fade from '@mui/material/Fade';
 import SvgIcon from "@mui/material/SvgIcon";
 import SwapVertIcon from '@mui/icons-material/SwapVert';
-
 //Timeline
 import Timeline from '@mui/lab/Timeline';
 import TimelineItem, { timelineItemClasses } from '@mui/lab/TimelineItem';
@@ -18,15 +15,8 @@ import TimelineSeparator from '@mui/lab/TimelineSeparator';
 import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
-import { TimelineOppositeContent } from '@mui/lab';
-// import flightsData from '../../Data/TestData1';
 import moment from 'moment';
-import { useSelector, useDispatch } from 'react-redux';
-import { updateIsBanerDisplay } from '../../store/displaySlice';
 import FilterComponent from '../FilterComponent.js/FilterComponent';
-import EastIcon from '@mui/icons-material/East';
-import MultipleStopIcon from '@mui/icons-material/MultipleStop';
-import SyncAltIcon from '@mui/icons-material/SyncAlt';
 import DoneIcon from '@mui/icons-material/Done';
 import useApi from '../../Api/useApi';
 
@@ -55,10 +45,6 @@ const SortBy = [
 const DisplayFlights = ({ searchParams }) => {
     const [expanded, setExpanded] = React.useState(false);
     const [flightsData, setFlightsData] = React.useState(null);
-    // const [loading, setLoading] = React.useState(false);
-    const [sortedLoading, setSortedLoading] = React.useState(false);
-    const dispatch = useDispatch(); // Hook to dispatch actions
-
 
     const { callApi, error, loading } = useApi();
 
@@ -76,23 +62,14 @@ const DisplayFlights = ({ searchParams }) => {
 
     const searchFlights = async (sortType) => {
         try {
-            console.log('searchParams:', searchParams)
             const finalParams = sortType ? { ...searchParams, sortBy: sortType } : searchParams;
             const response = await callApi('/searchFlights', 'GET', null, finalParams);
-            console.log('Search Flights Data74::', response.data)
             setFlightsData(response.data)
         } catch (error) {
             console.error(error);
         } finally {
         }
     }
-    // useEffect(() => {
-    //     dispatch(updateIsBanerDisplay(false))
-
-    //     return () => dispatch(updateIsBanerDisplay(true))
-    // }, [])
-
-    // console.log('Flights Data111::', flightsData.itineraries)
 
     useEffect(() => {
         searchFlights()
@@ -157,7 +134,7 @@ const DisplayFlights = ({ searchParams }) => {
                 <Box sx={{ width: '100%' }}>
                     <div>
                         {
-                            !sortedLoading && flightsData != null && flightsData.itineraries.map((itr) => (
+                            flightsData != null && flightsData.itineraries.map((itr) => (
                                 <Accordion
                                     key={itr.id}
                                     expanded={expanded === itr.id}
@@ -200,11 +177,10 @@ const DisplayFlights = ({ searchParams }) => {
                                                         <Box
                                                             component="img"
                                                             sx={{
-                                                                width: 35, // Set desired width
-                                                                height: 35, // Set desired height (optional)
+                                                                width: 35,
+                                                                height: 35,
                                                             }}
                                                             alt="Example Image"
-                                                            // src="https://www.gstatic.com/flights/airline_logos/70px/6E.png"
                                                             src={leg.carriers.marketing[0].logoUrl}
                                                         />
                                                     </Grid>
@@ -245,8 +221,8 @@ const DisplayFlights = ({ searchParams }) => {
                                                             <Box
                                                                 component="img"
                                                                 sx={{
-                                                                    width: 35, // Set desired width
-                                                                    height: 35, // Set desired height (optional)
+                                                                    width: 35,
+                                                                    height: 35,
                                                                 }}
                                                                 alt="Example Image"
                                                                 src={leg.carriers.marketing[0].logoUrl}
@@ -343,8 +319,6 @@ const DisplayFlights = ({ searchParams }) => {
                                                 ))
                                             )}
                                     </AccordionDetails>
-
-
                                 </Accordion>
                             ))}
                     </div>
